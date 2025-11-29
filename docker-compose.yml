@@ -1,0 +1,58 @@
+services:
+  # Base de datos MySQL
+  db:
+    image: mysql:8.0
+    container_name: turnoapp-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-TurnoApp2024!Secure}
+      MYSQL_DATABASE: turnoapp
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init-db:/docker-entrypoint-initdb.d
+    networks:
+      - turnoapp-network
+
+  # Backend Spring Boot
+  backend:
+    image: hernans87/turnoapp-backend:latest
+    container_name: turnoapp-backend
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DATABASE_URL: jdbc:mysql://db:3306/turnoapp?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      DB_USERNAME: root
+      DB_PASSWORD: ${DB_PASSWORD:-TurnoApp2024!Secure}
+      JWT_SECRET: ${JWT_SECRET:-TurnoApp2024_Production_SuperSecretKey_MinLength256Bits_ForHS256Algorithm_ChangeInProduction!}
+      JWT_EXPIRATION: 86400000
+      SERVER_PORT: 8080
+    ports:
+      - "8080:8080"
+    networks:
+      - turnoapp-network
+
+  # Frontend React
+  frontend:
+    image: hernans87/turnoapp-frontend:latest
+    container_name: turnoapp-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+    networks:
+      - turnoapp-network
+
+networks:
+  turnoapp-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
