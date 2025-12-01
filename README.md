@@ -54,3 +54,11 @@ El sistema incluye datos de prueba precargados:
 - **Password:** 123456
 - **Email:** juan@dentista.com
 - **Password:** 123456
+
+
+---
+
+## Documentación
+
+La documentación reúne el Manual Técnico, el Manual de Usuario y las pruebas unitarias e integración, abarcando todos los aspectos necesarios para comprender, utilizar y validar el sistema.
+🔗 **Link a la documentación completa del proyecto:** [Haz clic aquí](https://drive.google.com/file/d/15rIflaKWg8uSUe5d9kF5DqF9cyFMzfgf/view?usp=sharing)
